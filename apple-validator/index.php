@@ -156,12 +156,15 @@ function in_string($s,$as) {
 
 
 
-function check($empass){
+function check($empass,$socks){
   $email      = $empass;
   $jembutque  = new curl();
   $jembutque->cookies('cookies/'.md5($_SERVER['REMOTE_ADDR']).'.txt');
   $jembutque->ssl(0, 2);
-  $page   = $jembutque->get('https://appleid.apple.com/account#!&page=create');
+if($socks != null){
+  $jembutque->socks($socks);
+}
+  $page = $jembutque->get('https://appleid.apple.com/account#!&page=create');
   $jembutque->header(
     array(
       'Accept:application/json, text/javascript, */*; q=0.01',
@@ -200,6 +203,11 @@ if(!isset($_GET['email'])){
   die(json_encode($re));
 }else{
   $ema= $_GET['email'];
-   check($ema);
+	if(isset($_GET['socks'])){
+  $socks = $_GET['socks'];
+	}else{
+  $socks = null;
+	}	
+   check($ema,$socks);
 }
 ?>
